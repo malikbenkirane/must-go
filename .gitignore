@@ -30,3 +30,10 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Miscellenaous
+# https://github.com/4sp1/yac
+.commit-stash
+.prepare.yaml
+.prompt
+{payload,response}.json
