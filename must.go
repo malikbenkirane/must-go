@@ -43,6 +43,14 @@ func Handle(h ErrorHandler) func(func() error) {
 	}
 }
 
+func HandleError(h ErrorHandler) func(error) {
+	return func(err error) {
+		if err != nil {
+			h.Handle(err)
+		}
+	}
+}
+
 func Have[T any](c Controller[T]) func(T, error) T {
 	return func(t T, err error) T {
 		return Do(c)(func() (T, error) {
