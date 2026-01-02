@@ -35,7 +35,7 @@ func Do[T any](c Controller[T]) func(func() (T, error)) T {
 	}
 }
 
-func Recover[T any](h ErrorHandler) func(func() error) {
+func Handle(h ErrorHandler) func(func() error) {
 	return func(f func() error) {
 		if err := f(); err != nil {
 			h.Handle(err)
@@ -65,7 +65,7 @@ type exitController[T any] struct {
 }
 
 func (c exitController[T]) Fallback(err error) T {
-	fmt.Println(err)
+	fmt.Fprintln(os.Stderr, err)
 	os.Exit(c.code)
 	return c.fallback
 }
