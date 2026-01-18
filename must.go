@@ -25,7 +25,9 @@ func HandlerOf[T any](c Controller[T]) ErrorHandler {
 	return errorHandler[T]{c}
 }
 
-func Do[T any](c Controller[T]) func(func() (T, error)) T {
+type ControllerDoFn[T any] func(func() (T, error)) T
+
+func Do[T any](c Controller[T]) ControllerDoFn[T] {
 	return func(f func() (T, error)) T {
 		v, err := f()
 		if err != nil {
@@ -35,7 +37,9 @@ func Do[T any](c Controller[T]) func(func() (T, error)) T {
 	}
 }
 
-func Handle(h ErrorHandler) func(func() error) {
+type ErrorHandlerFn func(func() error)
+
+func Handle(h ErrorHandler) ErrorHandlerFn {
 	return func(f func() error) {
 		if err := f(); err != nil {
 			h.Handle(err)
@@ -43,7 +47,9 @@ func Handle(h ErrorHandler) func(func() error) {
 	}
 }
 
-func HandleError(h ErrorHandler) func(error) {
+type ErrorValueHandlerFn func(error)
+
+func HandleError(h ErrorHandler) ErrorValueHandlerFn {
 	return func(err error) {
 		if err != nil {
 			h.Handle(err)
@@ -51,7 +57,9 @@ func HandleError(h ErrorHandler) func(error) {
 	}
 }
 
-func Have[T any](c Controller[T]) func(T, error) T {
+type ControllerHaveFn[T any] func(T, error) T
+
+func Have[T any](c Controller[T]) ControllerHaveFn[T] {
 	return func(t T, err error) T {
 		return Do(c)(func() (T, error) {
 			return t, err
